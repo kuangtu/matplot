@@ -18,6 +18,8 @@ positive y-axis.
 """
 import matplotlib.pyplot as plt
 
+import matplotlib.ticker as ticker
+
 
 # The slices will be ordered and plotted counter-clockwise.
 labels = 'Frogs', 'Hogs', 'Dogs', 'Logs'
@@ -29,5 +31,10 @@ plt.pie(sizes, explode=explode, labels=labels, colors=colors,
         autopct='%1.1f%%', shadow=True, startangle=90)
 # Set aspect ratio to be equal so that pie is drawn as a circle.
 plt.axis('equal')
+
+
+fig = plt.figure()
+ax = fig.add_subplot(1,1,1)
+
 
 plt.show()
