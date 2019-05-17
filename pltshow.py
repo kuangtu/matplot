@@ -184,7 +184,48 @@ def sp_perf_ax_lim():
     plt.show()
 
 
-def
+def sp_perf_ax_tick():
+    dt_hex = '#2b4750'
+    perf = pd.read_csv("sp500.csv", index_col=0, parse_dates=True, dayfirst=True)
+    spx = perf[['Adj Close']].loc['2007-01-03':'2009-12-28',]
+
+    fig = plt.figure(figsize=(16, 6), dpi=100)
+    ax = fig.add_subplot(1, 1, 1)
+    x = spx.index
+    y = spx.values
+    ax.plot(y, color='r', linewidth=2, linestyle='-')
+    ax.set_xlim(-1, len(x) + 1)
+    ax.set_ylim(y.min() * 0.8, y.max() * 1.2)
+
+    ax.set_xticks(range(0, len(x), 40))
+    ax.set_xticklabels([x[i].strftime("%Y-%m-%d") for i in ax.get_xticks()], rotation=45)
+    plt.show()
+
+def two_axes():
+    dt_hex = '#2b4750'
+    perf = pd.read_csv("sp500.csv", index_col=0, parse_dates=True, dayfirst=True)
+    spx = perf[['Adj Close']].loc['2007-01-03':'2009-12-28',]
+    perf = pd.read_csv("VIX.csv", index_col=0, parse_dates=True, dayfirst=True)
+    vix = perf[['Adj Close']].loc['2007-01-03':'2009-12-28',]
+    fig = plt.figure(figsize=(10, 6), dpi=100)
+    ax1 = fig.add_subplot(1, 1, 1)
+    x = spx.index
+    y1 = spx.values
+    y2 = vix.values
+    ax1.plot(y1, color='r', linewidth=2, linestyle='-', label='SP500')
+    ax1.set_xlim(-1, len(x) + 1)
+    ax1.set_ylim(np.vstack([y1, y2]).min() * 0.8, np.vstack([y1, y2]).max() * 1.2)
+
+    x_tick = range(0, len(x), 40)
+    x_label= [x[i].strftime("%Y-%m-%d") for i in x_tick]
+    ax1.set_xticks(x_tick)
+    ax1.set_xticklabels(x_label, rotation=90)
+    ax1.legend(loc='upper left', framon=True)
+
+    ax2 = ax1.twinx()
+    ax2.plot(y2, color='r', linewidth=2, linestyle='-', label='VIX')
+    ax2.legend(loc='upper right', framon=True)
+
 
 if __name__ == '__main__':
     # showfig()
@@ -199,4 +240,6 @@ if __name__ == '__main__':
     # sp_perf_show()
     # sp_perf_show_detail()
     # sp_perf_ax_lim()
+    # sp_perf_ax_tick()
+    two_axes()
 
