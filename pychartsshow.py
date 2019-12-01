@@ -31,25 +31,8 @@ def KLine(filename):
     print(type(price))
     high_price = aap_perf['High'].tolist()
     low_price = aap_perf['Low'].tolist()
-
-
-    # (
-    #     Candlestick(init_opts=opts.InitOpts(width="1440px", height="720px"))
-    #         .add_xaxis(xaxis_data=dates)
-    #         .add_yaxis(series_name="", y_axis=price)
-    #         .set_series_opts()
-    #         .set_global_opts(
-    #         yaxis_opts=opts.AxisOpts(
-    #             splitline_opts=opts.SplitLineOpts(
-    #                 is_show=True, linestyle_opts=opts.LineStyleOpts(width=1)
-    #             )
-    #         )
-    #     ).render("kline.html")
-    # )
     candles = Candlestick(init_opts=opts.InitOpts(width="1440px", height="720px"))
     candles.add_xaxis(xaxis_data=dates)
-    # candles.add_yaxis(series_name="", y_axis=price, tooltip_opts=opts.TooltipOpts(trigger="axis", is_show=True,
-    #                                                                               trigger_on="mousemove|click"))
     candles.add_yaxis(series_name="K线",
                       y_axis=price,
                       tooltip_opts=opts.TooltipOpts(is_show=True, trigger='item'),
@@ -83,24 +66,7 @@ def KLine(filename):
     candles.overlap(line)
     candles.render("kline.html")
 
-    # kline = Kline("AAP", title_pos='center')
-    # kline = Kline("AAP")
-    # kline = Kline("K 线图示例")
-    # kline = Kline()
-    # kline.add_xaxis(dates)
-    # kline.add_yaxis("K-Line", price)
-    # kline.render()
-    # kline.add('K-Line', dates, price, tooltip_tragger='axis', is_datazoom_show=True,
-    #           legend_pos='right', legend_orient='vertical', legend_text_size=10)
-    # line2 = Line()
-    #
-    # cols = ['High', "low"]
-    # for c in cols:
-    #     line2.add(c, dates, price[c], tooltip_tragger='axis')
-    #
-    # kline.overlap(line2)
-    # overlap.add(kline)
-    # overlap.add(line2)
+
 
 def demo():
     x_data = ["2017-10-24", "2017-10-25", "2017-10-26", "2017-10-27"]
@@ -229,7 +195,7 @@ def maLine():
         line.add_yaxis(series_name='MA' + str(wp), y_axis=MA_price, is_symbol_show=True,
                        label_opts=opts.LabelOpts(is_show=False))
     avgline.overlap(line)
-    avgline.render("kline.html")
+    avgline.render("mvline.html")
 
 def rsiLine():
     col_features = ['Close']
@@ -248,6 +214,7 @@ def rsiLine():
     price = aap_perf.values.tolist()
     print(type(dates))
     print(type(price))
+    print(price)
 
     # high_price = aap_perf['High'].tolist()
     # low_price = aap_perf['Low'].tolist()
@@ -257,56 +224,81 @@ def rsiLine():
     avgline.add_xaxis(xaxis_data=dates)
     avgline.add_yaxis(series_name="close",
                       y_axis=price,
-                      yaxis_index=0,
-                      # tooltip_opts=opts.TooltipOpts(is_show=True, trigger='axis', trigger_on="mousemove|click", axis_pointer_type='cross'),
-                      # # itemstyle_opts=opts.ItemStyleOpts(color="#ec0000", color0="#00da3c", border_color="#8A0000",border_color0="#008F28"),
-                      # is_symbol_show=True, label_opts=opts.LabelOpts(is_show=False),
                       )
     avgline.extend_axis(yaxis=opts.AxisOpts(
-        name="点位", name_location="middle", name_gap=40,
-        position='left',
-        axisline_opts=opts.AxisLineOpts(linestyle_opts=opts.LineStyleOpts(color="#d14a61")
-                                        )))
-    avgline.extend_axis(yaxis=opts.AxisOpts(
-        name="RSI", name_location="middle", name_gap=40,
-        position='right',
-        min_=0, max_=100,
-        axisline_opts=opts.AxisLineOpts(
-            linestyle_opts=opts.LineStyleOpts(color="#675bba")
-        )))
+                    name="RSI强弱",
+                    name_location="middle",
+                    name_gap=40,
+                    position='right',
+                    axislabel_opts=opts.LabelOpts(formatter="{value}"),
+                    interval=10,
+                    axisline_opts=opts.AxisLineOpts(linestyle_opts=opts.LineStyleOpts(color="#d14a61")),
+                    splitline_opts=opts.SplitLineOpts(
+                    is_show=True,
+                    linestyle_opts=opts.LineStyleOpts(opacity=1))
+    ))
+    avgline.set_series_opts(label_opts=opts.LabelOpts(is_show=False))
+
     avgline.set_global_opts(
-        title_opts=opts.TitleOpts(title="苹果-走势强弱", pos_top='top'),
+        title_opts=opts.TitleOpts(title="苹果-价格走势", pos_top='top'),
         yaxis_opts=opts.AxisOpts
-        (is_scale=True,
-         splitline_opts=opts.SplitLineOpts(is_show=True, linestyle_opts=opts.LineStyleOpts(width=1)),
-         splitarea_opts=opts.SplitAreaOpts(is_show=True, areastyle_opts=opts.AreaStyleOpts(opacity=1)),
-         name_textstyle_opts=opts.TextStyleOpts(font_size=15, font_weight="bold"),
+        (
+            name="股票价格",
+            name_location='middle',
+            name_gap=50,
+            position='left',
+            # offset=80,
+            # min_=0, max_=100,
+            is_scale=True,
+            splitline_opts=opts.SplitLineOpts(
+                is_show=True,
+                linestyle_opts=opts.LineStyleOpts(width=1)),
+            splitarea_opts=opts.SplitAreaOpts(
+                is_show=True,
+                areastyle_opts=opts.AreaStyleOpts(opacity=1)),
+            name_textstyle_opts=opts.TextStyleOpts(font_size=15, font_weight="bold"),
+            axislabel_opts=opts.LabelOpts(formatter="{value} ($)"),
          ),
-        xaxis_opts=opts.AxisOpts(name="日期", name_location="middle", name_gap=40,
-                                 name_textstyle_opts=opts.TextStyleOpts(font_size=15, font_weight="bold")),
-        legend_opts=opts.LegendOpts(is_show=True, pos_right=True, orient='vertical', textstyle_opts=
-        opts.TextStyleOpts(font_size=10)),
         datazoom_opts=[opts.DataZoomOpts()],
         toolbox_opts=opts.ToolboxOpts(),
         tooltip_opts=opts.TooltipOpts(trigger="axis", axis_pointer_type="cross"),
+        legend_opts=opts.LegendOpts(
+            is_show=True,
+            pos_right=True,
+            orient='vertical',
+            textstyle_opts=opts.TextStyleOpts(
+                font_size=10)),
+        xaxis_opts=opts.AxisOpts(
+            name="日期",
+            name_location="middle",
+            name_gap=30,
+            name_textstyle_opts=opts.TextStyleOpts(
+                font_size=15,
+                font_weight="bold")),
     )
     line = Line()
     wp = 14
     RSI = ta.RSI(np.array(aap_perf['Close']), timeperiod=wp)
     line.add_xaxis(xaxis_data=dates)
-    line.add_yaxis(series_name='RSI', y_axis=RSI, is_symbol_show=True,
-                   label_opts=opts.LabelOpts(is_show=False),
+    line.add_yaxis(series_name='RSI',
+                   y_axis=RSI,
+                   yaxis_index=1,
+                   label_opts=opts.LabelOpts(
+                       is_show=False))
+    line.add_yaxis(series_name='Support',
+                   y_axis=30 * np.ones(np.shape(RSI)),
+                   label_opts=opts.LabelOpts(
+                       is_show=False),
+                   yaxis_index=1,)
+    line.add_yaxis(series_name='Resistance',
+                   y_axis=70 * np.ones(np.shape(RSI)),
+                   label_opts=opts.LabelOpts(
+                       is_show=False),
                    yaxis_index=1)
-    # line.add_yaxis(series_name='Support', y_axis=30 * np.ones(np.shape(RSI)), is_symbol_show=True,
-    #                label_opts=opts.LabelOpts(is_show=False),
-    #                yaxis_index=1)
-    # line.add_yaxis(series_name='Resistance', y_axis=70 * np.ones(np.shape(RSI)),is_symbol_show=True,
-    #                label_opts=opts.LabelOpts(is_show=False),
-    #                yaxis_index=1)
 
+    line.set_series_opts(linestyle_opts=opts.LineStyleOpts(type_='dashed'))
 
-    avgline.overlap(line)
-    avgline.render("rsi.html")
+    avgline.overlap(line).render("rsi.html")
 
 def grid_mutil_yaxis() -> Grid:
     x_data = ["{}月".format(i) for i in range(1, 13)]
@@ -385,6 +377,282 @@ def grid_mutil_yaxis() -> Grid:
 
     bar.overlap(line)
     return Grid().add(bar, opts.GridOpts(pos_left="5%", pos_right="20%"))
+def multi_y():
+    col_features = ['Close']
+    win_peroid = [5, 10, 20]
+    # col_order = ['Open', 'Close', 'Low', 'High']
+    perf = pd.read_csv("pyechartsdata.csv", index_col=0, parse_dates=True, dayfirst=True)
+    aap_perf = perf[perf['Symbol'] == 'AAPL']
+    aap_perf = aap_perf[col_features]
+    print(aap_perf.head())
+    dates = aap_perf.index
+    dates = aap_perf.index.strftime("%Y-%m-%d")
+    dates = dates.tolist()
+    price = aap_perf.values.tolist()
+    wp = 14
+    RSI = ta.RSI(np.array(aap_perf['Close']), timeperiod=wp)
+    colors = ['#5793f3', '#d14a61', '#675bba']
+    x_data = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
+    rainfall_capacity = [2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3]
+    average_temperature = [2.0, 2.2, 3.3, 4.5, 6.3, 10.2, 20.3, 23.4, 23.0, 16.5, 12.0, 6.2]
+
+    line1 = (
+        Line(init_opts=opts.InitOpts(width="1680px", height="800px"))
+            .add_xaxis(
+            xaxis_data=dates
+        )
+            # .add_yaxis(
+            # series_name="蒸发量",
+            # y_axis=evaporation_capacity,
+            # yaxis_index=0,
+            # color=colors[1]
+        # )
+            .add_yaxis(
+            series_name="点位",
+            y_axis=price,
+            yaxis_index=0,
+            color=colors[0]
+        )
+        #     .extend_axis(
+        #     yaxis=opts.AxisOpts(
+        #         name="蒸发量",
+        #         type_="value",
+        #         min_=0,
+        #         max_=250,
+        #         position="right",
+        #         axisline_opts=opts.AxisLineOpts(
+        #             linestyle_opts=opts.LineStyleOpts(color=colors[1])
+        #         ),
+        #         axislabel_opts=opts.LabelOpts(
+        #             formatter="{value} ml"
+        #         )
+        #     )
+        # )
+            .extend_axis(
+            yaxis=opts.AxisOpts(
+                type_="value",
+                name="点位",
+                # min_ = 100,
+                # max_ = 200,
+                min_=0,
+                max_=500,
+                # is_scale=True,
+                position="left",
+                axisline_opts=opts.AxisLineOpts(
+                    linestyle_opts=opts.LineStyleOpts(color=colors[2])
+                ),
+                axislabel_opts=opts.LabelOpts(
+                    formatter="{value}点"
+                ),
+                splitline_opts=opts.SplitLineOpts(
+                    is_show=True,
+                    linestyle_opts=opts.LineStyleOpts(
+                        opacity=1
+                    )
+                )
+            )
+        )
+            .set_global_opts(
+            yaxis_opts=opts.AxisOpts(
+                type_="value",
+                name="RSI",
+                min_=0,
+                max_=100,
+                position="right",
+                offset=80,
+                axisline_opts=opts.AxisLineOpts(
+                    linestyle_opts=opts.LineStyleOpts(color=colors[0])
+                ),
+                axislabel_opts=opts.LabelOpts(
+                    formatter="{value} 值"
+                ),
+            ),
+            tooltip_opts=opts.TooltipOpts(
+                trigger="axis",
+                axis_pointer_type="cross"
+            ),
+        )
+    )
+
+    line2 = (
+        Line()
+            .add_xaxis(
+            xaxis_data=dates
+        )
+            .add_yaxis(
+            series_name="RSI",
+            y_axis=RSI,
+            yaxis_index=1,
+            color=colors[2],
+        )
+    )
+
+    line1.overlap(line2).render("multiple_y_axes.html")
+
+def barline():
+    v1 = [2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3]
+    v2 = [2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3]
+    v3 = [2.0, 2.2, 3.3, 4.5, 6.3, 10.2, 20.3, 23.4, 23.0, 16.5, 12.0, 6.2]
+    months = ["{}月".format(i) for i in range(1, 13)]
+    line1 = (
+        Line()
+        .add_xaxis(months)
+        .add_yaxis("蒸发量", v1)
+        .extend_axis(
+            yaxis=opts.AxisOpts(
+                axislabel_opts=opts.LabelOpts(formatter="{value} °C"), interval=5,
+                is_scale=True
+            ),
+        )
+        .set_series_opts(label_opts=opts.LabelOpts(is_show=False))
+        .set_global_opts(
+            title_opts=opts.TitleOpts(title="Overlap-bar+line"),
+            yaxis_opts=opts.AxisOpts(
+                axislabel_opts=opts.LabelOpts(formatter="{value} ml")
+            ),
+
+            tooltip_opts=opts.TooltipOpts(
+                trigger="axis",
+                axis_pointer_type="cross"
+            ),
+        )
+    )
+
+    line2 = Line().add_xaxis(months).add_yaxis("平均温度", v3, yaxis_index=1)
+    line1.overlap(line2)
+    return line1
+
+def GridDemo():
+    col_features = ['Open', 'High', 'Low', 'Close']
+    col_order = ['Open', 'Close', 'Low', 'High']
+    perf = pd.read_csv("pyechartsdata.csv", index_col=0, parse_dates=True, dayfirst=True)
+    aap_perf = perf[perf['Symbol'] == 'AAPL']
+    aap_perf = aap_perf[col_features]
+    print(aap_perf.head())
+    aap_perf = aap_perf[col_order]
+    print(aap_perf.head())
+    # print(aap_perf.head())
+    dates = aap_perf.index
+    dates = aap_perf.index.strftime("%Y-%m-%d")
+    dates = dates.tolist()
+    price = aap_perf.values.tolist()
+    print(type(dates))
+    print(type(price))
+
+    aap_close = perf[perf['Symbol'] == 'AAPL']
+    aap_close= aap_close['Close'].values.tolist()
+
+    candles = Candlestick(
+        init_opts=opts.InitOpts(
+            width="1440px",
+            height="720px"))
+    candles.add_xaxis(xaxis_data=dates)
+    candles.add_yaxis(
+        series_name="K线",
+        y_axis=price,
+        tooltip_opts=opts.TooltipOpts(
+            is_show=True,
+            trigger='item'),
+        itemstyle_opts=opts.ItemStyleOpts(
+            color="#ec0000",
+            color0="#00da3c",
+            border_color="#8A0000",
+            border_color0="#008F28")
+    )
+    candles.set_global_opts(
+        title_opts=opts.TitleOpts(
+            title="苹果-K线图",
+            pos_top='top'),
+        yaxis_opts=opts.AxisOpts
+        (is_scale=True,
+         splitline_opts=opts.SplitLineOpts(
+             is_show=True,
+             linestyle_opts=opts.LineStyleOpts(
+                 width=1)),
+         splitarea_opts=opts.SplitAreaOpts(
+             is_show=True,
+             areastyle_opts=opts.AreaStyleOpts(
+                 opacity=1)),
+         name="点位",
+         name_location="middle",
+         name_gap=40,
+         name_textstyle_opts=opts.TextStyleOpts(
+             font_size=15,
+             font_weight="bold")
+         ),
+        xaxis_opts=opts.AxisOpts(
+            name="日期",
+            name_location="middle",
+            name_gap=40,
+            name_textstyle_opts=opts.TextStyleOpts(
+                font_size=15,
+                font_weight="bold")),
+        legend_opts=opts.LegendOpts(
+            is_show=True,
+            pos_top=True,
+            orient='vertical',
+            textstyle_opts=opts.TextStyleOpts(
+                font_size=10)),
+        datazoom_opts=[opts.DataZoomOpts(
+            xaxis_index=[1,0]
+        )],
+        toolbox_opts=opts.ToolboxOpts()
+    )
+    candles.set_series_opts()
+
+    line = Line(init_opts=opts.InitOpts(
+            width="1440px",
+            height="720px")
+    )
+    line.add_xaxis(xaxis_data=dates)
+    line.add_yaxis(
+        series_name='fb',
+        y_axis=aap_close,
+        is_symbol_show=True,
+        label_opts=opts.LabelOpts(is_show=False)
+    )
+
+    line.set_global_opts(
+        title_opts=opts.TitleOpts(
+            title="FB走势",
+            pos_top='48%',
+        ),
+        legend_opts=opts.LegendOpts(
+            pos_bottom='200%,'
+        ),
+        yaxis_opts=opts.AxisOpts(
+            is_scale=True,
+            splitline_opts=opts.SplitLineOpts(
+                is_show=True,
+                linestyle_opts=opts.LineStyleOpts(
+                    width=1)),
+            splitarea_opts=opts.SplitAreaOpts(
+                is_show=True,
+                areastyle_opts=opts.AreaStyleOpts(
+                    opacity=1)),
+            name="点位",
+            name_location="middle",
+            name_gap=40,
+            name_textstyle_opts=opts.TextStyleOpts(
+                font_size=15,
+                font_weight="bold")
+                  ),
+        xaxis_opts=opts.AxisOpts(
+            name="日期",
+            name_location="middle",
+            name_gap=40,
+            name_textstyle_opts=opts.TextStyleOpts(
+                font_size=15,
+                font_weight="bold")),
+        datazoom_opts=[opts.DataZoomOpts()],
+    )
+
+    grid = Grid()
+    grid.add(candles, grid_opts=opts.GridOpts(pos_bottom='60%'))
+    grid.add(line, grid_opts=opts.GridOpts(pos_top='60%'))
+    grid.render("grid.html")
+
+
 if __name__ == '__main__':
     filename = "pycharts.csv"
     # KLine(filename)
@@ -395,4 +663,9 @@ if __name__ == '__main__':
     # g = Grid()
     # g = grid_mutil_yaxis()
     # g.render('grid.html')
+    # multi_y()
+    # bar = barline()
+    # bar.render("bar.html")
+    # GridDemo()
+
 
